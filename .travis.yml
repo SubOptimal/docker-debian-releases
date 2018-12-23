@@ -2,20 +2,134 @@
 dist: xenial
 addons: { apt: { packages: [ debootstrap, qemu-user-static ] } }
 language: generic
-# Only some basic specific tests on master;
-# the official build is done in branches.
 env:
-  - MIRROR=ubuntu V=16.04 DIST=xenial  ARCH=armhf
-  - MIRROR=debian V=9     DIST=stretch ARCH=mipsel VARIANT=minbase
+  - V=14.10 DIST=utopic   ARCH=ppc64el
+  - V=15.04 DIST=vivid    ARCH=ppc64el
+  - V=15.10 DIST=wily     ARCH=ppc64el
+  # - V=16.04 DIST=xenial   ARCH=ppc64el # invalid instruction
+  # - V=16.10 DIST=yakkety  ARCH=ppc64el # invalid instruction
+  # - V=17.04 DIST=zesty    ARCH=ppc64el # invalid instruction
+  # - V=17.10 DIST=artful   ARCH=ppc64el # invalid instruction
+  # - V=18.04 DIST=bionic   ARCH=ppc64el # invalid instruction
+  # - V=18.10 DIST=cosmic   ARCH=ppc64el # invalid instruction
+
+  - V=07.04 DIST=feisty   ARCH=powerpc
+  - V=07.10 DIST=gutsy    ARCH=powerpc
+  - V=08.04 DIST=hardy    ARCH=powerpc
+  - V=08.10 DIST=intrepid ARCH=powerpc
+  - V=09.04 DIST=jaunty   ARCH=powerpc
+  - V=09.10 DIST=karmic   ARCH=powerpc
+  - V=10.04 DIST=lucid    ARCH=powerpc
+  - V=10.10 DIST=maverick ARCH=powerpc
+  - V=11.04 DIST=natty    ARCH=powerpc
+  - V=11.10 DIST=oneiric  ARCH=powerpc
+  - V=12.04 DIST=precise  ARCH=powerpc
+  - V=12.10 DIST=quantal  ARCH=powerpc
+  - V=13.04 DIST=raring   ARCH=powerpc
+  - V=13.10 DIST=saucy    ARCH=powerpc
+  - V=14.04 DIST=trusty   ARCH=powerpc
+  - V=14.10 DIST=utopic   ARCH=powerpc
+  - V=15.04 DIST=vivid    ARCH=powerpc
+  - V=15.10 DIST=wily     ARCH=powerpc
+  - V=16.04 DIST=xenial   ARCH=powerpc
+  - V=16.10 DIST=yakkety  ARCH=powerpc
+
+  - V=09.04 DIST=jaunty   ARCH=armel
+  - V=09.10 DIST=karmic   ARCH=armel
+  - V=10.04 DIST=lucid    ARCH=armel
+  - V=10.10 DIST=maverick ARCH=armel
+  - V=11.04 DIST=natty    ARCH=armel
+  - V=11.10 DIST=oneiric  ARCH=armel
+  - V=12.04 DIST=precise  ARCH=armel
+  - V=12.10 DIST=quantal  ARCH=armel
+
+  - V=12.04 DIST=precise  ARCH=armhf
+  - V=12.10 DIST=quantal  ARCH=armhf
+  - V=13.04 DIST=raring   ARCH=armhf
+  - V=13.10 DIST=saucy    ARCH=armhf
+  - V=14.04 DIST=trusty   ARCH=armhf
+  - V=14.10 DIST=utopic   ARCH=armhf
+  - V=15.04 DIST=vivid    ARCH=armhf
+  - V=15.10 DIST=wily     ARCH=armhf
+  - V=16.04 DIST=xenial   ARCH=armhf
+  - V=16.10 DIST=yakkety  ARCH=armhf
+  - V=17.04 DIST=zesty    ARCH=armhf
+  - V=17.10 DIST=artful   ARCH=armhf
+  - V=18.04 DIST=bionic   ARCH=armhf
+  # - V=18.10 DIST=cosmic   ARCH=armhf # no idea why this doesn't work: https://travis-ci.com/lpenz/docker-debian-releases/jobs/174942324
+
+  - V=13.10 DIST=saucy    ARCH=arm64
+  - V=14.04 DIST=trusty   ARCH=arm64
+  - V=14.10 DIST=utopic   ARCH=arm64
+  - V=15.04 DIST=vivid    ARCH=arm64
+  - V=15.10 DIST=wily     ARCH=arm64
+  - V=16.04 DIST=xenial   ARCH=arm64
+  - V=16.10 DIST=yakkety  ARCH=arm64
+  - V=17.04 DIST=zesty    ARCH=arm64
+  - V=17.10 DIST=artful   ARCH=arm64
+  - V=18.04 DIST=bionic   ARCH=arm64
+  - V=18.10 DIST=cosmic   ARCH=arm64
+
+  - V=07.04 DIST=feisty   ARCH=amd64
+  - V=07.10 DIST=gutsy    ARCH=amd64
+  - V=08.04 DIST=hardy    ARCH=amd64
+  - V=08.10 DIST=intrepid ARCH=amd64
+  - V=09.04 DIST=jaunty   ARCH=amd64
+  - V=09.10 DIST=karmic   ARCH=amd64
+  - V=10.04 DIST=lucid    ARCH=amd64
+  - V=10.10 DIST=maverick ARCH=amd64
+  - V=11.04 DIST=natty    ARCH=amd64
+  - V=11.10 DIST=oneiric  ARCH=amd64
+  - V=12.04 DIST=precise  ARCH=amd64
+  - V=12.10 DIST=quantal  ARCH=amd64
+  - V=13.04 DIST=raring   ARCH=amd64
+  - V=13.10 DIST=saucy    ARCH=amd64
+  - V=14.04 DIST=trusty   ARCH=amd64
+  - V=14.10 DIST=utopic   ARCH=amd64
+  - V=15.04 DIST=vivid    ARCH=amd64
+  - V=15.10 DIST=wily     ARCH=amd64
+  - V=16.04 DIST=xenial   ARCH=amd64
+  - V=16.10 DIST=yakkety  ARCH=amd64
+  - V=17.04 DIST=zesty    ARCH=amd64
+  - V=17.10 DIST=artful   ARCH=amd64
+  - V=18.04 DIST=bionic   ARCH=amd64
+  - V=18.10 DIST=cosmic   ARCH=amd64
+
+  - V=07.04 DIST=feisty   ARCH=i386
+  - V=07.10 DIST=gutsy    ARCH=i386
+  - V=08.04 DIST=hardy    ARCH=i386
+  - V=08.10 DIST=intrepid ARCH=i386
+  - V=09.04 DIST=jaunty   ARCH=i386
+  - V=09.10 DIST=karmic   ARCH=i386
+  - V=10.04 DIST=lucid    ARCH=i386
+  - V=10.10 DIST=maverick ARCH=i386
+  - V=11.04 DIST=natty    ARCH=i386
+  - V=11.10 DIST=oneiric  ARCH=i386
+  - V=12.04 DIST=precise  ARCH=i386
+  - V=12.10 DIST=quantal  ARCH=i386
+  - V=13.04 DIST=raring   ARCH=i386
+  - V=13.10 DIST=saucy    ARCH=i386
+  - V=14.04 DIST=trusty   ARCH=i386
+  - V=14.10 DIST=utopic   ARCH=i386
+  - V=15.04 DIST=vivid    ARCH=i386
+  - V=15.10 DIST=wily     ARCH=i386
+  - V=16.04 DIST=xenial   ARCH=i386
+  - V=16.10 DIST=yakkety  ARCH=i386
+  - V=17.04 DIST=zesty    ARCH=i386
+  - V=17.10 DIST=artful   ARCH=i386
+  - V=18.04 DIST=bionic   ARCH=i386
+  - V=18.10 DIST=cosmic   ARCH=i386
 script:
+  - MIRROR=ubuntu
   - IMAGE="$DOCKERHUB_USERNAME/debian-${DIST}-${ARCH}"
   - ARGS=()
   - if [ "$ARCH" != "i386" ] && [ "$ARCH" != "amd64" ]; then ARGS+=("-q"); fi
   - if [ -n "$VARIANT" ]; then ARGS+=("-t" "$VARIANT"); IMAGE+="-$VARIANT"; fi
   - ./docker-create-debian-image -m "$MIRROR" -i "$IMAGE" "${ARGS[@]}" "$DIST" "$ARCH"
-jobs:
-  include:
-    - name: omnilint
-      env: [ OMNILINT=true ]
-      install: docker pull lpenz/omnilint
-      script: docker run --rm -v "$PWD:$PWD" -e "RWD=$PWD" -e "MY_UID=$UID" lpenz/omnilint
+before_deploy:
+  - docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+deploy:
+  - provider: script
+    script: true docker push "$IMAGE"
+    on:
+      branch: ubuntu
