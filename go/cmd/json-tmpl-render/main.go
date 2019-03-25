@@ -1,5 +1,6 @@
-//usr/bin/env go run "$0" "$@"; exit "$?"
-// -*- go -*-
+// Copyright (C) 2019 Leandro Lisboa Penz <lpenz@lpenz.org>
+// This file is subject to the terms and conditions defined in
+// file 'LICENSE', which is part of this source code package.
 
 package main
 
@@ -10,18 +11,9 @@ import (
 	"os"
 	"strings"
 	"text/template"
-	"time"
-)
 
-func panicIf(err error, transforms ...func(error) error) {
-	if err == nil {
-		return
-	}
-	for _, transform := range transforms {
-		err = transform(err)
-	}
-	panic(err)
-}
+	"../../common"
+)
 
 func cmdLineParse() (string, string, string, error) {
 	if len(os.Args) > 4 || len(os.Args) < 2 {
@@ -34,36 +26,25 @@ func cmdLineParse() (string, string, string, error) {
 	return os.Args[1], os.Args[2], output, nil
 }
 
-type releaseInfo struct {
-	Origin        string
-	Label         string
-	Suite         string
-	Version       string
-	Date          time.Time
-	Codename      string
-	URL           string
-	Architectures []string
-}
-
 func main() {
 	jsonfilename, tmplfilename, outfilename, err := cmdLineParse()
-	panicIf(err)
+	common.PanicIf(err)
 	jsonString, err := ioutil.ReadFile(jsonfilename)
-	panicIf(err)
-	var releaseInfos []releaseInfo
+	common.PanicIf(err)
+	var releaseInfos []common.ReleaseInfo
 	err = json.Unmarshal(jsonString, &releaseInfos)
-	panicIf(err)
+	common.PanicIf(err)
 	t, err := template.New("").Funcs(template.FuncMap{
 		"stringsIndex": strings.Index,
 	}).ParseFiles(tmplfilename)
-	panicIf(err)
+	common.PanicIf(err)
 	if outfilename != "-" {
 		outfile, err := os.Create(outfilename)
-		panicIf(err)
+		common.PanicIf(err)
 		err = t.ExecuteTemplate(outfile, tmplfilename, releaseInfos)
-		panicIf(err)
+		common.PanicIf(err)
 	} else {
 		err = t.ExecuteTemplate(os.Stdout, tmplfilename, releaseInfos)
-		panicIf(err)
+		common.PanicIf(err)
 	}
 }

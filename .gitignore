@@ -1,3 +1,5 @@
 /tmp\.*
 /.sconsign.dblite
 _*
+/apt-mirrors-info
+/json-tmpl-render

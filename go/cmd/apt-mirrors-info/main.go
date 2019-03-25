@@ -1,5 +1,6 @@
-//usr/bin/env go run "$0" "$@"; exit "$?"
-// -*- go -*-
+// Copyright (C) 2019 Leandro Lisboa Penz <lpenz@lpenz.org>
+// This file is subject to the terms and conditions defined in
+// file 'LICENSE', which is part of this source code package.
 
 package main
 
@@ -16,17 +17,9 @@ import (
 	"sort"
 	"strings"
 	"time"
-)
 
-func panicIf(err error, transforms ...func(error) error) {
-	if err == nil {
-		return
-	}
-	for _, transform := range transforms {
-		err = transform(err)
-	}
-	panic(err)
-}
+	"../../common"
+)
 
 func getLinksFromURL(url string) ([]string, error) {
 	links := []string{}
@@ -36,7 +29,7 @@ func getLinksFromURL(url string) ([]string, error) {
 	}
 	defer func() {
 		err := resp.Body.Close()
-		panicIf(err)
+		common.PanicIf(err)
 	}()
 	z := html.NewTokenizer(resp.Body)
 	for {
@@ -60,26 +53,15 @@ func getLinksFromURL(url string) ([]string, error) {
 	}
 }
 
-type releaseInfo struct {
-	Origin        string
-	Label         string
-	Suite         string
-	Version       string
-	Date          time.Time
-	Codename      string
-	URL           string
-	Architectures []string
-}
-
-func getReleaseInfo(url string) (releaseInfo, error) {
-	ri := releaseInfo{}
+func getReleaseInfo(url string) (common.ReleaseInfo, error) {
+	ri := common.ReleaseInfo{}
 	resp, err := http.Get(url)
 	if err != nil {
 		return ri, err
 	}
 	defer func() {
 		err := resp.Body.Close()
-		panicIf(err)
+		common.PanicIf(err)
 	}()
 	lineRe := regexp.MustCompile(`(^[A-Z][a-z]+): (.*)$`)
 	scanner := bufio.NewScanner(resp.Body)
@@ -109,14 +91,14 @@ func getReleaseInfo(url string) (releaseInfo, error) {
 			ri.Architectures = strings.Split(kv[2], " ")
 		}
 	}
-	if reflect.DeepEqual(ri, releaseInfo{}) {
+	if reflect.DeepEqual(ri, common.ReleaseInfo{}) {
 		return ri, fmt.Errorf("could not parse lines in %s", url)
 	}
 	ri.URL = url
 	return ri, err
 }
 
-func getAptmirrorsReleaseInfos() []releaseInfo {
+func getAptmirrorsReleaseInfos() []common.ReleaseInfo {
 	mirrors := []string{
 		"http://archive.debian.org/debian",
 		"http://deb.debian.org/debian",
@@ -124,11 +106,11 @@ func getAptmirrorsReleaseInfos() []releaseInfo {
 		"http://archive.ubuntu.com/ubuntu",
 		"http://old-releases.ubuntu.com/ubuntu",
 	}
-	releaseInfos := []releaseInfo{}
+	releaseInfos := []common.ReleaseInfo{}
 	for _, m := range mirrors {
 		url := m + "/dists" // /${dist}/main/binary-${arch}/Release
 		links, err := getLinksFromURL(url)
-		panicIf(err)
+		common.PanicIf(err)
 		for _, link := range links {
 			ri, err := getReleaseInfo(link + "/Release")
 			if err != nil {
@@ -160,15 +142,15 @@ func cmdLineParse() (string, error) {
 
 func main() {
 	filename, err := cmdLineParse()
-	panicIf(err)
+	common.PanicIf(err)
 	releaseInfos := getAptmirrorsReleaseInfos()
 	json, err := json.MarshalIndent(releaseInfos, "", "  ")
-	panicIf(err)
+	common.PanicIf(err)
 	jsonstr := string(json) + "\n"
 	if filename == "" || filename == "-" {
 		fmt.Print(jsonstr)
 	} else {
 		err := ioutil.WriteFile(filename, []byte(jsonstr), 0644)
-		panicIf(err)
+		common.PanicIf(err)
 	}
 }
